@@ -81,19 +81,49 @@ android {
 repositories {
   mavenCentral()
   google()
-}
+  jcenter()
+  maven {
+    // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+    url("$rootDir/../node_modules/react-native/android")
+  }
+  maven {
+    // paytm all in one sdk
+    url "https://artifactory.paytm.in/libs-release-local"
+  }
+  maven {
+    // Android JSC is installed from npm
+    url("$rootDir/../node_modules/jsc-android/dist")
+  }
 
+  // add below code - start
+  configurations.all {
+    resolutionStrategy {
+      force "com.facebook.react:react-native:+"
+
+      // use 0.9.0 to fix crash on Android 11
+      force "com.facebook.soloader:soloader:0.9.0+"
+      // force 'com.facebook.react:react-native:0.71.3'
+    }
+  }
+  // code - end
+  google()
+  maven { url 'https://www.jitpack.io' }
+}
 
 dependencies {
   // For < 0.71, this will be from the local maven repo
   // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
   //noinspection GradleDynamicVersion
-  implementation "com.facebook.react:react-native:+"
+  implementation 'com.facebook.react:react-native:+'
+  implementation 'com.facebook.react:react-native:+'
+  implementation 'com.google.code.gson:gson:2.10.1'
+  implementation fileTree(dir: 'src\\libs', include: ['*.aar', '*.jar'], exclude: [])
 }
 
 if (isNewArchitectureEnabled()) {
   react {
     jsRootDir = file("../src/")
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     libraryName = "RNImpressaoZebraMovel"
     codegenJavaPackageName = "com.impressaozebramovel"
   }

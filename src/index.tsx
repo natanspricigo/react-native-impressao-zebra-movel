@@ -17,6 +17,28 @@ const RNImpressaoZebraMovel = NativeModules.RNImpressaoZebraMovel
       }
     );
 
-export function multiply(a: number, b: number): Promise<number> {
-  return RNImpressaoZebraMovel.multiply(a, b);
+export function connect(address: string): Promise<object> {
+  return RNImpressaoZebraMovel.connect(address);
 }
+
+export function enableBluetooth(): Promise<boolean> {
+  return RNImpressaoZebraMovel.enableBluetooth();
+}
+
+export function isEnabledBluetooth(): Promise<boolean> {
+  return RNImpressaoZebraMovel.isEnabledBluetooth();
+}
+
+export function getPairedDevices(): Promise<Array<any>> {
+  return RNImpressaoZebraMovel.getPairedDevices();
+}
+
+export function printZebraZpl(command: string): Promise<boolean> {
+  return RNImpressaoZebraMovel.printZebraZpl(command);
+}
+
+export function configurePrinter(): Promise<boolean> {
+  return RNImpressaoZebraMovel.configurePrinter();
+}
+
+

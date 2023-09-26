@@ -17,7 +17,7 @@ module.exports = {
           ) {
             return;
           }
-
+/*
           const result = child_process.spawnSync(
             'yarn',
             ['pod-install', 'example/ios'],
@@ -30,9 +30,11 @@ module.exports = {
             }
           );
 
+
           if (result.status !== 0) {
             throw new Error('Failed to run pod-install');
           }
+*/
         },
       },
     };
