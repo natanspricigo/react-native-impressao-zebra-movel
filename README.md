@@ -10,17 +10,21 @@ npm install react-native-impressao-zebra-movel
 
 ## Usage
 
+### Retornar todos os dispositivos pareados no celular
+
 ```js
-import { multiply } from 'react-native-impressao-zebra-movel';
-
+import { getPairedDevices } from 'react-native-impressao-zebra-movel';
 // ...
-
-const result = await multiply(3, 7);
+const devices = await getPairedDevices();
 ```
 
-## Contributing
+### Conecta a uma impressora Zebra através de um endereço, que pode s er obtido na função getPairedDevices
 
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
+```js
+import { connect } from 'react-native-impressao-zebra-movel';
+// ...
+const status = await connect('enredeço');
+```
 
 ## License
 
