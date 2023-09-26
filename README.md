@@ -7,6 +7,12 @@ Impressao mobile para impressoras Zebra
 ```sh
 npm install react-native-impressao-zebra-movel
 ```
+ou
+
+
+```sh
+yarn add react-native-impressao-zebra-movel
+```
 
 ## Usage
 
