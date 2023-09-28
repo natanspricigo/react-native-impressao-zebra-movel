@@ -123,7 +123,8 @@ public class RNImpressaoZebraMovelModule extends ReactContextBaseJavaModule {
     BluetoothAdapter adapter = this.bluetoothManager.getAdapter();
     try {
       if (adapter != null && adapter.isEnabled() && connection != null && connection.isConnected()) {
-        new ZebraPrinterZpl(connection).retrieveFormatFromPrinter(commands);
+        new ZebraPrinterZpl(connection).printStoredFormat(commands,new String[]{});
+        promise.resolve(true);
       }else{
         promise.reject("ERRO", "Conexão fechada ou bluetooth desativado");
       }
