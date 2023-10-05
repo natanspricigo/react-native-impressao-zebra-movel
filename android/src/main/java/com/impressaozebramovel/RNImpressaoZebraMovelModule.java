@@ -19,9 +19,10 @@ import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.module.annotations.ReactModule;
 import com.zebra.sdk.comm.BluetoothConnectionInsecure;
+import com.zebra.sdk.comm.Connection;
+import com.zebra.sdk.comm.ConnectionBuilder;
 import com.zebra.sdk.comm.ConnectionException;
 import com.zebra.sdk.printer.SGD;
-import com.zebra.sdk.printer.internal.ZebraPrinterZpl;
 
 import java.util.Set;
 
@@ -122,8 +123,11 @@ public class RNImpressaoZebraMovelModule extends ReactContextBaseJavaModule {
   public void printZebraZpl(String commands, final Promise promise) {
     BluetoothAdapter adapter = this.bluetoothManager.getAdapter();
     try {
-      if (adapter != null && adapter.isEnabled() && connection != null && connection.isConnected()) {
-        new ZebraPrinterZpl(connection).printStoredFormat(commands,new String[]{});
+      if (adapter != null && adapter.isEnabled() && connection != null) {
+        connection.open();
+        byte[] snd = commands.getBytes();
+        connection.write(snd);
+        connection.write("\r\n".getBytes());
         promise.resolve(true);
       }else{
         promise.reject("ERRO", "Conexão fechada ou bluetooth desativado");
