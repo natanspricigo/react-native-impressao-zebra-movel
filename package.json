@@ -1,6 +1,6 @@
 {
   "name": "react-native-impressao-zebra-movel",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Impressao mobile para impressoras Zebra",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
