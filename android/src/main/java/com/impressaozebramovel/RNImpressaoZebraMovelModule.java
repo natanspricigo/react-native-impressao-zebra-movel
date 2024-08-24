@@ -112,7 +112,14 @@ public class RNImpressaoZebraMovelModule extends ReactContextBaseJavaModule {
       try {
         connection = new BluetoothConnectionInsecure(address);
         connection.open();
-        promise.resolve(connection.isConnected());
+        Boolean isConn = false;
+        if(connection != null){
+          isconn = connection.isConnected();
+          if(iscon == null){
+            isConn = false;
+          }
+        }
+        promise.resolve(isConn);
       }catch(ConnectionException e){
         promise.reject(e);
       }
