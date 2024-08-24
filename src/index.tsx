@@ -37,8 +37,21 @@ export function printZebraZpl(command: string): Promise<boolean> {
   return RNImpressaoZebraMovel.printZebraZpl(command);
 }
 
+export function isConnectedPrinterZebra(): Promise<boolean> {
+  return RNImpressaoZebraMovel.isConnectedPrinterZebra();
+}
+
+export function getZebraParameter(param: string): Promise<boolean> {
+  return RNImpressaoZebraMovel.getZebraParameter(param);
+}
+
+export function setZebraParameter(
+  param: string,
+  value: string
+): Promise<boolean> {
+  return RNImpressaoZebraMovel.setZebraParameter(param, value);
+}
+
 export function configurePrinter(): Promise<boolean> {
   return RNImpressaoZebraMovel.configurePrinter();
 }
-
-
