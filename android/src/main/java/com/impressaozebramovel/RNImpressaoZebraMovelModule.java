@@ -23,6 +23,7 @@ import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionBuilder;
 import com.zebra.sdk.comm.ConnectionException;
 import com.zebra.sdk.printer.SGD;
+import com.zebra.sdk.util.internal.SGDUtilities;
 
 import java.util.Set;
 
@@ -151,7 +152,29 @@ public class RNImpressaoZebraMovelModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void isConnected(final Promise promise) {
+  public void setZebraParameter(String command, String value, final Promise promise) {
+    byte[] configLabel = null;
+    try {
+      SGD.SET(command, value, connection);
+    } catch (ConnectionException e) {
+      promise.reject(e);
+    }
+    promise.resolve(true);
+  }
+
+  @ReactMethod
+  public void getZebraParameter(String param, final Promise promise) {
+    byte[] configLabel = null;
+    try {
+      SGD.GET(param, connection);
+    } catch (ConnectionException e) {
+      promise.reject(e);
+    }
+    promise.resolve(true);
+  }
+
+  @ReactMethod
+  public void isConnectedPrinterZebra(final Promise promise) {
     if (connection == null) {
       promise.resolve(false);
     }
