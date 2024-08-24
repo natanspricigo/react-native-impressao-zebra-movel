@@ -114,8 +114,8 @@ public class RNImpressaoZebraMovelModule extends ReactContextBaseJavaModule {
         connection.open();
         Boolean isConn = false;
         if(connection != null){
-          isconn = connection.isConnected();
-          if(iscon == null){
+          isConn = connection.isConnected();
+          if(isConn == null){
             isConn = false;
           }
         }
