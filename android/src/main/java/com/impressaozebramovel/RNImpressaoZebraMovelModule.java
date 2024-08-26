@@ -111,7 +111,9 @@ public class RNImpressaoZebraMovelModule extends ReactContextBaseJavaModule {
       BluetoothDevice device = adapter.getRemoteDevice(address);
       try {
         connection = new BluetoothConnectionInsecure(address);
-        connection.open();
+        if(!connection.isConnected()){
+          connection.open();
+        }
         Boolean isConn = false;
         if(connection != null){
           isConn = connection.isConnected();
@@ -125,6 +127,17 @@ public class RNImpressaoZebraMovelModule extends ReactContextBaseJavaModule {
       }
     } else {
       promise.reject("error","BT NOT ENABLED");
+    }
+  }
+  @ReactMethod
+  public void disconnect(final Promise promise)  {
+    BluetoothAdapter adapter = this.bluetoothManager.getAdapter();
+    if (adapter != null && adapter.isEnabled()) {
+      try{
+        connection.close();
+      }catch (ConnectionException e) {
+        promise.reject(e);
+      }
     }
   }
   @ReactMethod

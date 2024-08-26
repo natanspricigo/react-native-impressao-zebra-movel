@@ -21,6 +21,10 @@ export function connect(address: string): Promise<object> {
   return RNImpressaoZebraMovel.connect(address);
 }
 
+export function disconnect(): Promise<object> {
+  return RNImpressaoZebraMovel.disconnect();
+}
+
 export function enableBluetooth(): Promise<boolean> {
   return RNImpressaoZebraMovel.enableBluetooth();
 }
