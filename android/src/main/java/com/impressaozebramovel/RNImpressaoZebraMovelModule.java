@@ -17,13 +17,18 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
+import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.module.annotations.ReactModule;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.bridge.*;
 import com.zebra.sdk.comm.BluetoothConnectionInsecure;
 import com.zebra.sdk.comm.Connection;
-import com.zebra.sdk.comm.ConnectionBuilder;
 import com.zebra.sdk.comm.ConnectionException;
+import com.zebra.sdk.printer.PrinterStatus;
 import com.zebra.sdk.printer.SGD;
-import com.zebra.sdk.util.internal.SGDUtilities;
+import com.zebra.sdk.printer.ZebraPrinter;
+import com.zebra.sdk.printer.ZebraPrinterFactory;
+import com.zebra.sdk.printer.ZebraPrinterLanguageUnknownException;
 
 import java.util.Set;
 
@@ -34,8 +39,10 @@ public class RNImpressaoZebraMovelModule extends ReactContextBaseJavaModule {
   private final ReactApplicationContext reactContext;
 
   public BluetoothManager bluetoothManager;
-  private BluetoothConnectionInsecure connection;
+  private Connection connection;
   public static Context context;
+
+  private ZebraPrinter printer;
   private static final String PORT_NAME = "portName";
   private static final String MAC_ADDRESS = "macAddress";
   private static final String MODULE_NAME = "moduleName";
@@ -77,6 +84,10 @@ public class RNImpressaoZebraMovelModule extends ReactContextBaseJavaModule {
     } else {
       promise.resolve(true);
     }
+  }
+
+  private void emitRNEvent(String event, WritableMap params) {
+    getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(event, params);
   }
 
   @ReactMethod
@@ -129,12 +140,37 @@ public class RNImpressaoZebraMovelModule extends ReactContextBaseJavaModule {
       promise.reject("error","BT NOT ENABLED");
     }
   }
+
+  @ReactMethod
+  public void eventPrintStatus(){
+    try {
+      if(connection == null || !connection.isConnected()){
+        emitRNEvent("DEVICE.DISCONNECT", null);
+      }
+      if(printer == null ){
+        printer = ZebraPrinterFactory.getInstance(connection);
+      }
+      PrinterStatus printerStatus = printer.getCurrentStatus();
+      if(printerStatus == null){
+        emitRNEvent("DEVICE.DISCONNECT", null);
+      }
+      if(printerStatus != null && !printerStatus.isReadyToPrint){
+        emitRNEvent("DEVICE.DISCONNECT", null);
+      }
+    }catch (Exception e) {
+      emitRNEvent("DEVICE.DISCONNECT.ERROR", null);
+    }
+  }
+
   @ReactMethod
   public void disconnect(final Promise promise)  {
     BluetoothAdapter adapter = this.bluetoothManager.getAdapter();
     if (adapter != null && adapter.isEnabled()) {
       try{
-        connection.close();
+        if(connection.isConnected()) {
+          connection.close();
+        }
+        promise.resolve(true);
       }catch (ConnectionException e) {
         promise.reject(e);
       }
@@ -142,6 +178,8 @@ public class RNImpressaoZebraMovelModule extends ReactContextBaseJavaModule {
   }
   @ReactMethod
   public void printZebraZpl(String commands, final Promise promise) {
+    //avaliar futuramente se isso é viavel
+    // eventPrintStatus();
     BluetoothAdapter adapter = this.bluetoothManager.getAdapter();
     try {
       if (adapter != null && adapter.isEnabled() && connection != null) {
@@ -194,10 +232,21 @@ public class RNImpressaoZebraMovelModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void isConnectedPrinterZebra(final Promise promise) {
-    if (connection == null) {
+  public void isConnectedPrinterZebra(final Promise promise) throws ConnectionException, ZebraPrinterLanguageUnknownException {
+    if (connection == null || !connection.isConnected()) {
       promise.resolve(false);
+    } else {
+      try{
+        ZebraPrinter printer = ZebraPrinterFactory.getInstance(connection);
+        if (printer != null) {
+          PrinterStatus printerStatus = printer.getCurrentStatus();
+          promise.resolve(printerStatus.isReadyToPrint);
+        } else {
+          promise.resolve(false);
+        }
+      }catch ( Exception e){
+        promise.resolve(false);
+      }
     }
-    promise.resolve(connection.isConnected());
   }
 }
